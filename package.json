@@ -23,6 +23,7 @@
     "prepublishOnly": "npm run lint && npm run test:ppo && npm run build"
   },
   "dependencies": {
+    "chalk": "^4.0.0",
     "is-object": "^1.0.1",
     "is-string": "^1.0.5",
     "isarray": "^2.0.5"
