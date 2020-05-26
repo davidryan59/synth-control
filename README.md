@@ -12,8 +12,19 @@
 
 **SynthControlArray** (**SCA**) - holds an array of SCM, in the order they will be played, for one or more synth parameters.
 
-### Quick examples
+### Quick start
+
+In Javascript npm project directory:
+
+``` sh
+npm i synth-control
+```
+
+In Javascript file:
+
 ``` js
+import { SynthControlArray, SynthControlMessage } from 'synth-control'
+
 // Control parameter 'freq', for length 3, with value 320
 const scm1 = new SynthControlMessage({param: 'freq', length: 3, value: 320})
 
@@ -88,9 +99,24 @@ Note - for a full time reversal, need to combine `reverse` and `flip` on all par
 
 ### Operations
 
-For mappings of type `length` and `value`, specify `op` and `num` in the data object to perform a numeric operation:
-- `{op: '+', num: b}` - a -> a + b
-- `{op: '*', num: b}` - a -> a * b
-- `{op: '^', num: b}` - a -> a ^ b, which is a ** b
-- `{op: 'exp', num: b}` - a -> b ^ a, which is b ** a
-- `{op: 'log', num: b}` - a -> log(a) base b, which is log_b(a)
+For mappings of type `value` and `length`, specify an operation type `op` in the data object to perform a mathematical operation on the SCMs. For binary operations, must also specify `num`.
+
+Unary operations:
+- `{type: 'value', op: 'abs'}` maps value `a` to `abs(a)`, the absolute value, always a positive number
+
+Binary operations:
+- `{type: 'value', op: '+', num: b}` maps value `a` to `a + b`
+- `{type: 'value', op: '*', num: b}` maps value `a` to `a * b`
+- `{type: 'value', op: '^', num: b}` maps value `a` to `a ^ b`, which is `a ** b`
+- `{type: 'value', op: '-', num: b}` maps value `a` to `b - a` (order-reversing, additive inversion in `b`)
+- `{type: 'value', op: '/', num: b}` maps value `a` to `b / a` (order-reversing, multiplicative inversion in `b`)
+- `{type: 'value', op: 'exp', num: b}` maps value `a` to `b ^ a`, which is `b ** a` (order-reversing)
+- `{type: 'value', op: 'log', num: b}` maps value `a` to `log(a) base b`, which is `log_b(a)`
+- `{type: 'value', op: 'max', num: b}` maps value `a` to `max(a, b)`
+- `{type: 'value', op: 'min', num: b}` maps value `a` to `min(a, b)`
+
+(These all map value but not length, so to map length replace `type: 'value'` by `type: 'length'`.)
+
+### Reference
+
+- An SCA is built up from SCMs similar to a piecewise linear function. See Wikipedia article: https://en.wikipedia.org/wiki/Piecewise_linear_function.
