@@ -17,10 +17,11 @@
     "lint": "eslint lib",
     "lint:fix": "eslint lib --fix",
     "test": "jest --test-path-pattern=lib/test --watch-all=true --coverage=true",
-    "test:ppo": "jest --test-path-pattern=lib/test",
+    "testOnly": "jest --test-path-pattern=lib/test",
     "build": "rm -rf dist && mkdir -p dist && babel lib --out-dir dist",
-    "examples": "cd ./dist/examples && node run.js",
-    "prepublishOnly": "npm run lint && npm run test:ppo && npm run build"
+    "examples": "npm run build && npm run examplesOnly",
+    "examplesOnly": "cd ./dist/examples && node run.js",
+    "prepublishOnly": "npm run lint && npm run testOnly && npm run build"
   },
   "dependencies": {
     "chalk": "^4.0.0",
