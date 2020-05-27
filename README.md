@@ -79,14 +79,14 @@ const sca3 = new SynthControlArray({ library: myLibrary, label: 'repeatReverse' 
 
 ### Data in `new SynthControlMessage(data)`
 
-| Key | Default | Type | Can use any of these in data object to initialise, or as getter |
+| Key | Default | Type | Can use any of these in data object to initialise, or as getters on an SCM |
 | - | - | - | - |
 | p | "" | String | p, param |
 | l | 0 | Number, non-negative | l, len, length |
 | v | 0 | Number | v, val, value, start, vS, valStart, valueStart |
 | vE | undefined | Number | vE, end, valEnd, valueEnd |
 
-An alternative constructor is `new SynthControlMessage(otherScm, data)` which first copies settings from `otherScm` and then overwrites any specified settings in `data`.
+An alternative constructor is `new SynthControlMessage(otherScm, data)` which first copies settings from `otherScm` and then overwrites any specified settings from the `data`.
 
 ### Data in `new SynthControlArray(data)`
 
@@ -95,25 +95,26 @@ An alternative constructor is `new SynthControlMessage(otherScm, data)` which fi
   - Data object to construct an SCM
   - SCA (which gets flattened)
 
-The SCA constructor can be used to concatenate smaller SCAs. It is possible to first map SCAs (using `sca.map(data)`, see next section) and then combine them using the constructor, such as `sca2 = new SynthControlArray([ sca1, sca1.map(data) ])`. In this way, very complex synth control (SCA) can be built up iteratively from atomic units of synth control messages (SCM).
+The SCA constructor can be used to concatenate smaller SCAs. It is possible to first map SCAs (using `sca.map(data)`, see next section) and then combine them using the constructor, such as `sca2 = new SynthControlArray([ sca1, sca1.map(data) ])`. In this way, very complex synth control (SCA) can be built up iteratively from atomic units of synth control messages (SCM). However the library construction (next) allows the whole chain of iterations to be easily specified in one place.
 
 2. **Library construction** If `data` is an object, constructor will look for a library and a label, e.g. `{library: myLibrary, label: 'myLabel'}`
   - `myLibrary` will be a Javascript plain object
   - `myLabel` will be a string
-  - `constructionData` is `myLibrary[myLabel]` and will be an object with keys `level` and `contents`
-  - `level` will be a non-negative integer
-  - `contents` will be an array
-  - For each entry `contentItem` there are two formats:
+  - `constructionData` is `myLibrary[myLabel]` and will be an object that includes keys `level` and `contents`
+  - `constructionData.level` will be a non-negative integer
+  - `constructionData.contents` will be an array, for each entry `contentItem` there are two formats:
     - SCM construction data, such as `{param: 'freq', length: 10, value: 420}`
-    - Link to SCA library construction, such as `{label: 'otherLabel'}`, this will **iterate** SCA construction
-  - See the example at the top of this page for a complete library and SCA constructor
-  - For iterated items, `level` must be strictly lower, which prevents any infinite loops.
+    - Iteration to SCA library construction, such as `{label: 'otherLabel'}`
+  - See above for a complete SCA library construction example
+  - Note:
+    - For `{label: 'otherLabel'}` the library entry `'otherLabel'` must have strictly lower level, this prevents all infinite loops
+    - Can optionally specify maps: `{label: 'otherLabel', maps: [...mapObjects]}`
 
 ### Mappings
 
 Can make new SCMs / SCAs from mappings on existing SCMs / SCAs, via `scm.map(data)` and `sca.map(data)`:
 - If `data` is an array, then each mapping in the data array will be applied sequentially, with the final result returned.
-- Otherwise, assume `data` is a plain Javascript object
+- Otherwise, assume `data` is a Javascript plain object
 - General form is `data = {type: 'type', ...otherData}`, and the mapping used will switch based on `type`.
 - If type is not recognised, do nothing, and return the original object.
 - Here are some defined types of mapping:
