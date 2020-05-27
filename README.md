@@ -22,8 +22,8 @@ import { SynthControlArray, SynthControlMessage } from 'synth-control'
 // Control parameter 'freq', for length 3, with value 320
 const scm1 = new SynthControlMessage({ param: 'freq', length: 3, value: 320 })
 
-// Control parameter (p) 'gain', for length (l) 2, with value ramping linearly from start 0.5 to end 0.1
-const scm2 = new SynthControlMessage({ p: 'gain', l: 2, start: 0.5, end: 0.1 })
+// Control parameter (p) 'gain', for length (l) 2, with value ramping linearly from start 0.5 to end 0.1; by setting start time to 15, the SCM is from time 15 to 17
+const scm2 = new SynthControlMessage({ p: 'gain', l: 2, start: 0.5, end: 0.1 }).setStartTime(15)
 
 // Copy scm1 above, but with value ramping linearly from 550 to 660
 const scm3 = new SynthControlMessage(scm1, { value: 550, valueEnd: 660 })
@@ -160,6 +160,15 @@ Binary operations:
 - `{type: 'value', op: 'min', num: b}` maps value `a` to `min(a, b)`
 
 (These all map value but not length, so to map length replace `type: 'value'` by `type: 'length'`.)
+
+### Timing
+
+SCMs can have an optional start time set via `scm.setStartTime(t)`. After this is carried out, then:
+- `scm.hasTimeSet` changes from `false` to `true`
+- `scm.getStartTime` changes from `0` (or previous value) to `t`
+- `scm.getEndTime` from `this.length` (or previous value) to `t + this.length`
+
+It is possible to call `.setStartTime(t)` multiple times, and each call will cache a new start and end time for the SCM. Also, `.setStartTime(t)` returns the SCM itself.
 
 ### Reference
 
