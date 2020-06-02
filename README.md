@@ -23,7 +23,7 @@ import { SynthControlArray, SynthControlMessage } from 'synth-control'
 const scm1 = new SynthControlMessage({ param: 'freq', duration: 3, value: 320 })
 
 // Control parameter (p) 'gain', for duration (d) 2, with value ramping linearly from start 0.5 to end 0.1; by setting start time to 15, the SCM is from time 15 to 17
-const scm2 = new SynthControlMessage({ p: 'gain', d: 2, start: 0.5, end: 0.1 }).setStartTime(15)
+const scm2 = new SynthControlMessage({ p: 'gain', d: 2, start: 0.5, end: 0.1 }).setTimeStart(15)
 
 // Copy scm1 above, but with value ramping linearly from 550 to 660
 const scm3 = new SynthControlMessage(scm1, { value: 550, valueEnd: 660 })
@@ -168,12 +168,12 @@ Binary operations:
 
 SCMs are generally immutable, but contain a data cache that can be updated. This is where the timing information, if it exists, is stored.
 
-To set timing information, use `scm.setStartTime(t)`, which will set both start time and end time (start + duration) for this SCM. After this method is called, then:
-- `scm.hasTimeSet` changes from `false` to `true`
+To set timing information, use `scm.setTimeStart(t)`, which will set both start time and end time (start + duration) for this SCM. After this method is called, then:
+- `scm.isTimeSet` changes from `false` to `true`
 - `scm.getStartTime` changes from `0` (or previous value) to `t`
 - `scm.getEndTime` from `this.duration` (or previous value) to `t + this.duration`
 
-It is possible to call `.setStartTime(t)` multiple times, and each call will cache a new start and end time for the SCM. Also, `.setStartTime(t)` returns the SCM itself, allowing calls to be chained.
+It is possible to call `.setTimeStart(t)` multiple times, and each call will cache a new start and end time for the SCM. Also, `.setTimeStart(t)` returns the SCM itself, allowing calls to be chained.
 
 ### Reference
 
